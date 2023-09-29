@@ -10,8 +10,8 @@ print(translit(greeteng_text, 'ru'))
 
 print()
 
-print(78, '-', num2words(78))
-print(15, '-', num2words(15))
-print(3, '-', num2words(3))
-print(40, '-', num2words(40))
-print(8, '-', num2words(8))
+print(78, '-', translit(num2words(78), 'ru'))
+print(15, '-', translit(num2words(15), 'ru'))
+print(3, '-', translit(num2words(3), 'ru'))
+print(40, '-', translit(num2words(40), 'ru'))
+print(8, '-', translit(num2words(8), 'ru'))
