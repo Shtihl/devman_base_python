@@ -44,13 +44,17 @@ def check_password(password):
     return score
 
 
-def on_ask_change(edit, score):
-    reply.set_text("Рейтинг этого пароля: %s" % check_password(score))
+def main():
+    def on_ask_change(edit, score):
+        reply.set_text("Рейтинг этого пароля: %s" % check_password(score))
+   
+    ask = urwid.Edit('Введите пароль: ', mask='*')
+    reply = urwid.Text("")
+    menu = urwid.Pile([ask, reply])
+    menu = urwid.Filler(menu, valign='top')
+    urwid.connect_signal(ask, 'change', on_ask_change)
+    urwid.MainLoop(menu).run()
 
 
-ask = urwid.Edit('Введите пароль: ', mask='*')
-reply = urwid.Text("")
-menu = urwid.Pile([ask, reply])
-menu = urwid.Filler(menu, valign='top')
-urwid.connect_signal(ask, 'change', on_ask_change)
-urwid.MainLoop(menu).run()
+if __name__ == "__main__":
+    main()
