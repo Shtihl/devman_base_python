@@ -44,7 +44,7 @@ def check_password(password):
     return score
 
 
-def main():
+if __name__ == "__main__":
     def on_ask_change(edit, score):
         reply.set_text("Рейтинг этого пароля: %s" % check_password(score))
    
@@ -54,7 +54,3 @@ def main():
     menu = urwid.Filler(menu, valign='top')
     urwid.connect_signal(ask, 'change', on_ask_change)
     urwid.MainLoop(menu).run()
-
-
-if __name__ == "__main__":
-    main()
