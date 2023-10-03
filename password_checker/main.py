@@ -44,10 +44,11 @@ def check_password(password):
     return score
 
 
+def on_ask_change(edit, score):
+    reply.set_text("Рейтинг этого пароля: %s" % check_password(score))
+
+
 if __name__ == "__main__":
-    def on_ask_change(edit, score):
-        reply.set_text("Рейтинг этого пароля: %s" % check_password(score))
-   
     ask = urwid.Edit('Введите пароль: ', mask='*')
     reply = urwid.Text("")
     menu = urwid.Pile([ask, reply])
