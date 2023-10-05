@@ -65,7 +65,9 @@ def get_coffee_distance(coffee):
 
 
 def create_map(user_place, number_of_point, coffee_distance_list):
-    coffee_map = folium.Map(location=user_place, tiles="cartodb positron", zoom_start=13)
+    coffee_map = folium.Map(
+        location=user_place, tiles="cartodb positron", zoom_start=13
+    )
     markers_list = sorted(coffee_distance_list, key=get_coffee_distance)[
         0:number_of_point
     ]
