@@ -3,10 +3,11 @@ import os
 import requests
 import folium
 from geopy import distance
-from pprint import pprint
 from flask import Flask
+from dotenv import load_dotenv
 
 
+load_dotenv()
 apikey = os.environ["GEOCODER_API_KEY"]
 
 
@@ -35,41 +36,36 @@ def get_user_place():
     return fetch_coordinates(apikey, input("Где вы находитесь: "))
 
 
-user_place = get_user_place()
-number_of_point = 5
-coffee_distance_list = []
-
-
 def get_coffee_base():
     with open("coffee.json", "r", encoding="CP1251") as coffee:
         coffee_json = coffee.read()
     return coffee_json
 
 
-coffee_base = json.loads(get_coffee_base())
-
-
-for coffee_id in range(0, len(coffee_base) - 1):
-    coffee_name = coffee_base[coffee_id]["Name"]
-    coffee_place = (
-        coffee_base[coffee_id]["Latitude_WGS84"],
-        coffee_base[coffee_id]["Longitude_WGS84"],
-    )
-    coffee_distance = {
-        "title": coffee_base[coffee_id]["Name"],
-        "distance": distance.distance(user_place, coffee_place).km,
-        "latitude": coffee_place[0],
-        "longitude": coffee_place[1],
-    }
-    coffee_distance_list.append(coffee_distance)
+def get_distance(coffee_base, user_place):
+    coffee_distance_list = []
+    for coffee_id in range(0, len(coffee_base) - 1):
+        coffee_name = coffee_base[coffee_id]["Name"]
+        coffee_place = (
+            coffee_base[coffee_id]["Latitude_WGS84"],
+            coffee_base[coffee_id]["Longitude_WGS84"],
+        )
+        coffee_distance = {
+            "title": coffee_name,
+            "distance": distance.distance(user_place, coffee_place).km,
+            "latitude": coffee_place[0],
+            "longitude": coffee_place[1],
+        }
+        coffee_distance_list.append(coffee_distance)
+    return coffee_distance_list
 
 
 def get_coffee_distance(coffee):
     return coffee["distance"]
 
 
-def create_map(user_place, number_of_point):
-    coffee_map = folium.Map(location=user_place, tiles="cartodb positron")
+def create_map(user_place, number_of_point, coffee_distance_list):
+    coffee_map = folium.Map(location=user_place, tiles="cartodb positron", zoom_start=13)
     markers_list = sorted(coffee_distance_list, key=get_coffee_distance)[
         0:number_of_point
     ]
@@ -84,12 +80,16 @@ def create_map(user_place, number_of_point):
 
 
 def hello_world():
-    create_map(user_place, number_of_point)
     with open("index.html") as file:
         return file.read()
 
 
 def main():
+    user_place = get_user_place()
+    number_of_point = 5
+    coffee_base = json.loads(get_coffee_base())
+    coffee_distance = get_distance(coffee_base, user_place)
+    create_map(user_place, number_of_point, coffee_distance)
     app = Flask(__name__)
     app.add_url_rule("/", "coffee_map", hello_world)
     app.run("0.0.0.0")
