@@ -7,9 +7,6 @@ from flask import Flask
 from dotenv import load_dotenv
 
 
-load_dotenv()
-
-
 def fetch_coordinates(apikey, address):
     base_url = "https://geocode-maps.yandex.ru/1.x"
     response = requests.get(
@@ -86,6 +83,7 @@ def hello_world():
 
 
 def main():
+    load_dotenv()
     apikey = os.environ["GEOCODER_API_KEY"]
     user_place = get_user_place(apikey)
     number_of_point = 5
