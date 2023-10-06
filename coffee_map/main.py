@@ -8,7 +8,6 @@ from dotenv import load_dotenv
 
 
 load_dotenv()
-apikey = os.environ["GEOCODER_API_KEY"]
 
 
 def fetch_coordinates(apikey, address):
@@ -32,7 +31,7 @@ def fetch_coordinates(apikey, address):
     return lat, lon
 
 
-def get_user_place():
+def get_user_place(apikey):
     return fetch_coordinates(apikey, input("Где вы находитесь: "))
 
 
@@ -87,7 +86,8 @@ def hello_world():
 
 
 def main():
-    user_place = get_user_place()
+    apikey = os.environ["GEOCODER_API_KEY"]
+    user_place = get_user_place(apikey)
     number_of_point = 5
     coffee_base = json.loads(get_coffee_base())
     coffee_distance = get_distance(coffee_base, user_place)
